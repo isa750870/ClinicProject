@@ -77,4 +77,15 @@ public class MainActivity extends AppCompatActivity {
     public void showBottomNavigation(boolean show) {
         binding.bottomNavigationView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
+
+    @Override
+    public void onBackPressed() {
+        // Если открыт фрагмент редактирования, возвращаемся к просмотру профиля
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
+        if (currentFragment instanceof EditProfileFragment) {
+            replaceFragment(new ProfileFragment());
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
