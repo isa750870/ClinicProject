@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">Private Clinic</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Private Clinic</string>
+    <string name="nav_header_subtitle">info@privateclinic.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Auth -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="logout">Logout</string>
+    <string name="no_account">Don\'t have an account? Register</string>
+    <string name="have_account">Already have an account? Login</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="enter_email">Please enter email</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="password_length">Password must be at least 6 characters</string>
+
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="appointments">Appointments</string>
+    <string name="tests">Tests</string>
+    <string name="profile">Profile</string>
+
+    <!-- Home -->
+    <string name="welcome">Welcome to Private Clinic</string>
+    <string name="services">Our Services</string>
+    <string name="doctors">Our Doctors</string>
+
+    <!-- Appointments -->
+    <string name="make_appointment">Make an Appointment</string>
+    <string name="doctor">Doctor</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="specialization">Specialization</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="your_appointments">Your Appointments</string>
+    <string name="no_appointments">No appointments yet</string>
+    <string name="select_doctor">Select Doctor</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+
+    <!-- Tests -->
+    <string name="test_results">Test Results</string>
+    <string name="test_name">Test Name</string>
+    <string name="test_date">Test Date</string>
+    <string name="test_result">Result</string>
+    <string name="add_test">Add Test Result</string>
+    <string name="no_tests">No test results yet</string>
+
+    <!-- Profile -->
+    <string name="personal_info">Personal Information</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone</string>
+    <string name="address">Address</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="profile_updated">Profile updated successfully</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "387368248463",
+    "project_id": "privateclinic-bfe7d",
+    "storage_bucket": "privateclinic-bfe7d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387368248463:android:408f8eaddfb2249cb13cfa",
+        "android_client_info": {
+          "package_name": "com.example.privateclinic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7dv1sseUixaRZwZ9ryCUm2FzSpcV7ZL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
