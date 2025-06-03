@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_launcher_background"
         android:title="Главная" />
     <item
+        android:id="@+id/nav_tabappointment"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="Запи" />
+    <item
         android:id="@+id/nav_appointment"
         android:icon="@drawable/ic_launcher_background"
         android:title="Запись" />

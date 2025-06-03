@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.nav_home) {
                 replaceFragment(new HomeFragment());
                 return true;
+            } else if (itemId == R.id.nav_tabappointment) {
+                replaceFragment(new AppointmentTabsFragment());
+                return true;
             } else if (itemId == R.id.nav_appointment) {
                 replaceFragment(new AppointmentFragment());
                 return true;
