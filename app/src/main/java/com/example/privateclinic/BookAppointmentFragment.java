@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -42,6 +44,7 @@ public class BookAppointmentFragment extends Fragment {
     private List<String> specializations = new ArrayList<>();
     private Map<String, List<Doctor>> doctorsBySpecialization = new HashMap<>();
     private SpecializationAdapter specializationAdapter;
+    private Map<String, UserDoctorRelation> userRelations = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,13 +58,40 @@ public class BookAppointmentFragment extends Fragment {
 
         specializationAdapter = new SpecializationAdapter(specializations, this::onSpecializationSelected);
         specializationsRecyclerView.setAdapter(specializationAdapter);
-
+        loadUserRelations();
         loadSpecializations();
+
 
         return view;
     }
 
+    private void loadUserRelations() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        db.collection("user_doctor_relations")
+                .whereEqualTo("userId", user.getUid())
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    userRelations.clear();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        UserDoctorRelation relation = doc.toObject(UserDoctorRelation.class);
+                        if (relation != null) {
+                            Log.d("RELATION_DEBUG", "Loaded doctorId: " + relation.getDoctorId());
+                            Log.d("RELATION_DEBUG", "isBlocked: " + relation.isBlocked());
+                            Log.d("RELATION_DEBUG", "Raw data: " + doc.getData());
+                            userRelations.put(relation.getDoctorId(), relation);
+                        }
+                    }
+                    loadSpecializations();
+                    // Загружаем специализации после загрузки отношений
+                });
+    }
+
     private void loadSpecializations() {
+        Log.d("DEBUG_IDS", "User relations keys: " + userRelations.keySet());
+        Log.d("DEBUG", "Starting loadSpecializations. Relations count: " + userRelations.size());
+
         db.collection("doctors")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -71,7 +101,18 @@ public class BookAppointmentFragment extends Fragment {
                     for (DocumentSnapshot document : querySnapshot.getDocuments()) {
                         Doctor doctor = document.toObject(Doctor.class);
                         if (doctor != null) {
-                            doctor.setId(document.getId());
+                            // ✅ Установите ID врача
+                            doctor.setId(document.getId()); // <-- ЭТО ОЧЕНЬ ВАЖНО!
+
+                            Log.d("DEBUG_IDS", "Processing doctor: " + doctor.getName() + ", ID: " + doctor.getId());
+
+                            // Теперь проверка на ЧС будет работать
+                            if (userRelations.containsKey(doctor.getId()) &&
+                                    userRelations.get(doctor.getId()).isBlocked()) {
+                                Log.d("FILTER_DEBUG", "Skipping blocked doctor: " + doctor.getName());
+                                continue;
+                            }
+
                             String specialization = doctor.getSpecialization();
                             uniqueSpecializations.add(specialization);
 

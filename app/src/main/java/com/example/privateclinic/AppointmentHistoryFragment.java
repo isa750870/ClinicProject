@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,12 +54,37 @@ public class AppointmentHistoryFragment extends Fragment {
         appointmentsRecyclerView = view.findViewById(R.id.appointmentsRecyclerView);
         appointmentsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new AppointmentAdapter(appointments);
+        adapter = new AppointmentAdapter(appointments, this::deleteAppointment);
         appointmentsRecyclerView.setAdapter(adapter);
 
         loadAppointments();
 
         return view;
+    }
+    private void deleteAppointment(Appointment appointment) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Отмена записи")
+                .setMessage("Вы уверены, что хотите отменить запись к " + appointment.getDoctorName() + "?")
+                .setPositiveButton("Да", (dialog, which) -> {
+                    cancelAppointment(appointment);
+                })
+                .setNegativeButton("Нет", null)
+                .show();
+    }
+
+    private void cancelAppointment(Appointment appointment) {
+        if (appointment == null || appointment.getId() == null) return;
+
+        db.collection("appointments")
+                .document(appointment.getId())
+                .update("status", "canceled")
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Запись отменена", Toast.LENGTH_SHORT).show();
+                    loadAppointments(); // Обновляем список
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Ошибка отмены записи", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void loadAppointments() {
@@ -88,9 +114,11 @@ public class AppointmentHistoryFragment extends Fragment {
 
     private static class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
         private List<Appointment> appointments;
+        private Consumer<Appointment> onDeleteClick;
 
-        public AppointmentAdapter(List<Appointment> appointments) {
+        public AppointmentAdapter(List<Appointment> appointments, Consumer<Appointment> onDeleteClick) {
             this.appointments = appointments;
+            this.onDeleteClick = onDeleteClick;
         }
 
         @NonNull
@@ -112,7 +140,12 @@ public class AppointmentHistoryFragment extends Fragment {
             holder.specializationText.setText(appointment.getSpecialization());
             holder.dateText.setText(dateTime);
             holder.statusText.setText(appointment.getStatus());
-
+            if ("booked".equals(appointment.getStatus())) {
+                holder.deleteButton.setVisibility(View.VISIBLE);
+                holder.deleteButton.setOnClickListener(v -> onDeleteClick.accept(appointment));
+            } else {
+                holder.deleteButton.setVisibility(View.GONE);
+            }
             // Установка цвета в зависимости от статуса
             int color;
             switch (appointment.getStatus()) {
@@ -126,6 +159,7 @@ public class AppointmentHistoryFragment extends Fragment {
                     color = Color.BLUE;
             }
             holder.statusText.setTextColor(color);
+
         }
 
         @Override
@@ -135,6 +169,7 @@ public class AppointmentHistoryFragment extends Fragment {
 
         static class ViewHolder extends RecyclerView.ViewHolder {
             TextView doctorText, specializationText, dateText, statusText;
+            Button deleteButton;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -142,6 +177,7 @@ public class AppointmentHistoryFragment extends Fragment {
                 specializationText = itemView.findViewById(R.id.specializationText);
                 dateText = itemView.findViewById(R.id.dateText);
                 statusText = itemView.findViewById(R.id.statusText);
+                deleteButton = itemView.findViewById(R.id.deleteButton);
             }
         }
     }

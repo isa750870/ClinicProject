@@ -36,5 +36,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textStyle="bold"/>
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:text="Отменить запись"
+            android:visibility="gone"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
