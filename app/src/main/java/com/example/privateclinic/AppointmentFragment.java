@@ -14,10 +14,15 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppointmentFragment extends Fragment {
     private RecyclerView doctorsRecyclerView;
@@ -51,14 +56,56 @@ public class AppointmentFragment extends Fragment {
     }
 
     private void loadDoctors() {
-        db.collection("doctors")
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        // Загружаем сначала отношения пользователя
+        db.collection("user_doctor_relations")
+                .whereEqualTo("userId", currentUser.getUid())
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    doctors = querySnapshot.toObjects(Doctor.class);
-                    for (int i = 0; i < querySnapshot.getDocuments().size(); i++) {
-                        doctors.get(i).setId(querySnapshot.getDocuments().get(i).getId());
+                .addOnSuccessListener(relationsQuery -> {
+                    // Собираем информацию об отношениях
+                    Map<String, UserDoctorRelation> relationsMap = new HashMap<>();
+                    for (DocumentSnapshot doc : relationsQuery.getDocuments()) {
+                        UserDoctorRelation relation = doc.toObject(UserDoctorRelation.class);
+                        if (relation != null && relation.getDoctorId() != null) {
+                            relationsMap.put(relation.getDoctorId(), relation);
+                        }
                     }
-                    adapter.updateDoctors(doctors);
+
+                    // Теперь загружаем всех врачей
+                    db.collection("doctors")
+                            .get()
+                            .addOnSuccessListener(doctorsQuery -> {
+                                List<Doctor> doctors = new ArrayList<>();
+                                for (DocumentSnapshot doc : doctorsQuery.getDocuments()) {
+                                    Doctor doctor = doc.toObject(Doctor.class);
+                                    if (doctor != null) {
+                                        doctor.setId(doc.getId());
+                                        // Добавляем информацию об отношениях
+                                        UserDoctorRelation relation = relationsMap.get(doctor.getId());
+                                        doctor.setFavorite(relation != null && relation.isFavorite());
+                                        doctor.setBlocked(relation != null && relation.isBlocked());
+                                        doctors.add(doctor);
+                                    }
+                                }
+
+                                // Сортируем врачей
+                                Collections.sort(doctors, (d1, d2) -> {
+                                    // 1. Заблокированные врачи в конце
+                                    if (d1.isBlocked() && !d2.isBlocked()) return 1;
+                                    if (!d1.isBlocked() && d2.isBlocked()) return -1;
+
+                                    // 2. Избранные врачи в начале
+                                    if (d1.isFavorite() && !d2.isFavorite()) return -1;
+                                    if (!d1.isFavorite() && d2.isFavorite()) return 1;
+
+                                    // 3. Остальные сортируются по рейтингу
+                                    return Double.compare(d2.getRating(), d1.getRating());
+                                });
+
+                                adapter.updateDoctors(doctors);
+                            });
                 });
     }
 }
