@@ -1,4 +1,4 @@
-package com.example.privateclinic;
+package com.example.privateclinic.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -7,6 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.privateclinic.AppointmentFragment;
+import com.example.privateclinic.AppointmentTabsFragment;
+import com.example.privateclinic.EditProfileFragment;
+import com.example.privateclinic.HomeFragment;
+import com.example.privateclinic.LoginFragment;
+import com.example.privateclinic.ProfileFragment;
+import com.example.privateclinic.R;
+import com.example.privateclinic.TestsFragment;
 import com.example.privateclinic.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
