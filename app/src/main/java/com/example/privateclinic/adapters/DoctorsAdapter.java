@@ -1,4 +1,4 @@
-package com.example.privateclinic;
+package com.example.privateclinic.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.privateclinic.R;
+import com.example.privateclinic.models.Doctor;
 
 import java.util.List;
 import java.util.Locale;

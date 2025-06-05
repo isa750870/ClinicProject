@@ -15,6 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.privateclinic.models.Doctor;
+import com.example.privateclinic.models.DoctorReview;
+import com.example.privateclinic.models.UserDoctorRelation;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

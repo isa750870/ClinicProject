@@ -1,8 +1,6 @@
-package com.example.privateclinic;
+package com.example.privateclinic.models;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import java.util.List;
 
 public class TestType {

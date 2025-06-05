@@ -1,4 +1,4 @@
-package com.example.privateclinic;
+package com.example.privateclinic.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

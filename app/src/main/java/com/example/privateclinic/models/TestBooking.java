@@ -1,11 +1,7 @@
-package com.example.privateclinic;
+package com.example.privateclinic.models;
 
 import com.google.firebase.Timestamp;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import com.google.firebase.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 

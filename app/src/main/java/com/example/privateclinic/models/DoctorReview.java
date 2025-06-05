@@ -1,4 +1,4 @@
-package com.example.privateclinic;
+package com.example.privateclinic.models;
 
 import com.google.firebase.Timestamp;
 
